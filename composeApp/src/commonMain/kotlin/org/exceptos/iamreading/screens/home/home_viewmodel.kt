@@ -1,5 +1,7 @@
 package org.exceptos.iamreading.screens.home
 
-class HomeViewmodel {
+import androidx.lifecycle.ViewModel
+
+class HomeViewmodel : ViewModel()  {
 
 }
