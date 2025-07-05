@@ -43,6 +43,7 @@ fun App() {
     ) {
 
         Surface {
+
             val navController : NavHostController = rememberNavController()
             NavHost( navController = navController, startDestination = HomeScreen) {
                 composable<HomeScreen> {

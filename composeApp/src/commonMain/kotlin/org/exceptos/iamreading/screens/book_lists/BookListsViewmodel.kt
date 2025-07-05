@@ -25,7 +25,13 @@ class BookListsViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    fun addBook(title: String, author: String, description: String, imageUrl: String?, status: BookStatus) {
+    fun addBook(
+        title: String,
+        author: String,
+        description: String,
+        imageUrl: String?,
+        status: BookStatus
+    ) {
         viewModelScope.launch {
             bookRepository.insertBook(title, author, description, imageUrl, status.toString())
         }

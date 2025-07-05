@@ -3,6 +3,7 @@ package org.exceptos.iamreading.screens.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -159,6 +160,10 @@ fun LibraryContent(paddingValues: PaddingValues, onNavigateToBookLists: (BookSta
                     selectedBookStatus = BookStatus.FINISHED
                     onNavigateToBookLists(selectedBookStatus!!)
                 }
+            )
+
+            Spacer(
+                modifier = Modifier.padding(12.dp)
             )
 
             // My History Section
