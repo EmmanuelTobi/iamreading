@@ -6,11 +6,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
-    id("com.google.devtools.ksp")
-}
-
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
+    alias(libs.plugins.kspCompose)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -39,7 +36,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
-            implementation(libs.androidx.room.paging)
+            implementation(libs.androidx.room.runtime)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -61,8 +58,8 @@ kotlin {
             implementation(libs.coil.network.ktor)
             implementation(libs.koin.core)
             implementation(libs.navigation.compose)
-            implementation(libs.sqlite.bundled)
 
+            implementation(libs.sqlite.bundled)
             implementation(libs.androidx.room.runtime)
             
             // MOKO MVVM dependencies
@@ -74,9 +71,33 @@ kotlin {
     }
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
 }
+
+//cocoapods {
+//    summary = "Some description for the Shared Module"
+//    homepage = "Link to the Shared Module homepage"
+//    version = "1.0"
+//    ios.deploymentTarget = "17.4"
+//    podfile = project.file("../iosApp/Podfile")
+//    framework {
+//        baseName = "shared"
+//        isStatic = true
+//    }
+//    pod("lottie-ios") {
+//        version = "4.4.3"
+//        linkOnly = true
+//    }
+//}
 
 android {
     namespace = "org.exceptos.iamreading"

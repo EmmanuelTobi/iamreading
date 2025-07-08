@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.exceptos.iamreading.data.model.Book
 import org.exceptos.iamreading.data.model.BookStatus
+import org.exceptos.iamreading.handlers.ResultHandler
 import org.exceptos.iamreading.repo.BookRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -14,15 +15,28 @@ import org.koin.core.component.inject
 class BookListsViewModel : ViewModel(), KoinComponent {
     private val bookRepository: BookRepository by inject()
 
-    private val _books = MutableStateFlow<List<Book>>(emptyList())
-    val books: StateFlow<List<Book>> = _books.asStateFlow()
+    private val _books = MutableStateFlow<ResultHandler<List<Book>>>(ResultHandler.Loading)
+    val books: StateFlow<ResultHandler<List<Book>>> = _books.asStateFlow()
+
+    private val _selectedBook = MutableStateFlow<Book?>(null)
+    val selectedBook: StateFlow<Book?> = _selectedBook.asStateFlow()
+
+    init {
+        loadBooks(BookStatus.CURRENTLY_READING)
+    }
 
     fun loadBooks(status: BookStatus) {
+        _books.value = ResultHandler.Loading
+
         viewModelScope.launch {
             bookRepository.getBooksByStatus(status.toString()).collect { bookList ->
-                _books.value = bookList
+                if(bookList.isEmpty())
+                    _books.value = ResultHandler.Success(emptyList())
+                else
+                _books.value = ResultHandler.Success(bookList)
             }
         }
+
     }
 
     fun addBook(
@@ -43,9 +57,27 @@ class BookListsViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    fun deleteBook(id: Int) {
+    suspend fun deleteBook(id: Int?, book: Book?) {
+
+        if (book != null) {
+
+            _selectedBook.value = book
+
+        } else if(id != null) {
+
+            _selectedBook.value = _books.collect {
+                if(it is ResultHandler.Success) {
+                    it.data.find { it.id == id }
+                }
+            }
+
+        }
+
+        if(_selectedBook.value == null)
+            return
+
         viewModelScope.launch {
-            bookRepository.deleteBook(_books.value.find { it.id == id }!!)
+            bookRepository.deleteBook(_selectedBook.value!!)
         }
     }
 }
