@@ -45,7 +45,7 @@ fun LibraryItem(
             Surface(
                 modifier = Modifier.size(48.dp),
                 shape = CircleShape,
-                color = Color.LightGray
+                color = Color.LightGray.copy(alpha = 0.4f)
             ) {
 
                 Image(

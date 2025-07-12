@@ -3,6 +3,8 @@ package org.exceptos.iamreading.di
 import org.exceptos.iamreading.repo.BookRepository
 import org.exceptos.iamreading.screens.book_lists.BookListsViewModel
 import org.exceptos.iamreading.data.dao.BookDao
+import org.exceptos.iamreading.data.dao.BookNoteDao
+import org.exceptos.iamreading.data.dao.StatsDao
 import org.exceptos.iamreading.data.db.AppDatabase
 import org.exceptos.iamreading.data.model.BookStatus
 import org.koin.core.module.Module
@@ -17,6 +19,14 @@ fun appModule() = module {
 
     single<BookDao>(named("PrimaryBookDao")) {
         get<AppDatabase>().getBookDao()
+    }
+
+    single<StatsDao>(named("StatsDao")) {
+        get<AppDatabase>().getStatsDao()
+    }
+
+    single<BookNoteDao>(named("BookNotesDao")) {
+        get<AppDatabase>().getBookNotesDao()
     }
 
     includes(platformModule())

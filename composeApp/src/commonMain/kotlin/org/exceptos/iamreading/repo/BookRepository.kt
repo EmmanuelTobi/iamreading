@@ -32,7 +32,8 @@ class BookRepository(private val bookDao: BookDao) {
             author = author,
             description = description,
             imageUrl = imageUrl,
-            status = status
+            status = status,
+            totalNotes = 0
         )
 
         println(book.author)
@@ -52,6 +53,6 @@ class BookRepository(private val bookDao: BookDao) {
         imageUrl: String?,
         status: BookStatus
     ) {
-        bookDao.updateBook(id, title, author, description, imageUrl)
+        bookDao.updateBook(id, title, author, description, imageUrl, status.name, 0)
     }
 }

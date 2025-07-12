@@ -19,8 +19,24 @@ interface BookDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBook(book: Book)
 
-    @Query("UPDATE books SET title = :title, author = :author, imageUrl = :imageUrl, description = :description WHERE id = :id")
-    suspend fun updateBook(id: Int, title: String, author: String, description: String, imageUrl: String?)
+    @Query("UPDATE " +
+            "books SET " +
+            "title = :title, " +
+            "author = :author, " +
+            "imageUrl = :imageUrl, " +
+            "status = :status, " +
+            "totalNotes = :totalNotes, " +
+            "description = :description WHERE " +
+            "id = :id")
+    suspend fun updateBook(
+        id: Int,
+        title: String,
+        author: String,
+        description: String,
+        imageUrl: String?,
+        status: String,
+        totalNotes: Int
+    )
 
     @Delete
     suspend fun deleteBook(book: Book)
