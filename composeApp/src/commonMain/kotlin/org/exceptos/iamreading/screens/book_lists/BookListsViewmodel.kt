@@ -12,7 +12,7 @@ import org.exceptos.iamreading.repo.BookRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class BookListsViewModel : ViewModel(), KoinComponent {
+class BookListsViewModel(status: BookStatus? = null) : ViewModel(), KoinComponent {
     private val bookRepository: BookRepository by inject()
 
     private val _books = MutableStateFlow<ResultHandler<List<Book>>>(ResultHandler.Loading)
@@ -21,8 +21,13 @@ class BookListsViewModel : ViewModel(), KoinComponent {
     private val _selectedBook = MutableStateFlow<Book?>(null)
     val selectedBook: StateFlow<Book?> = _selectedBook.asStateFlow()
 
-    init {
-        loadBooks(BookStatus.CURRENTLY_READING)
+//    init {
+//        loadBooks(status ?: BookStatus.CURRENTLY_READING )
+//    }
+
+    fun setBookStatus(status: BookStatus) {
+        bookRepository.bookStatus = status
+        loadBooks(status)
     }
 
     fun loadBooks(status: BookStatus) {
@@ -46,6 +51,9 @@ class BookListsViewModel : ViewModel(), KoinComponent {
         imageUrl: String?,
         status: BookStatus
     ) {
+
+        println(bookRepository.bookStatus);
+
         viewModelScope.launch {
             bookRepository.insertBook(title, author, description, imageUrl, status.toString())
         }

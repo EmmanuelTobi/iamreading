@@ -38,11 +38,15 @@ fun BookItem(
             shape = RoundedCornerShape(8.dp)
         ) {
 
-            Image(
-                painterResource(drawableResource!!),
-                "image",
-                modifier = Modifier.padding(15.dp)
-            )
+            if(drawableResource != null) {
+
+                Image(
+                    painterResource(drawableResource),
+                    "image",
+                    modifier = Modifier.padding(15.dp)
+                )
+
+            }
 
         }
         Column {

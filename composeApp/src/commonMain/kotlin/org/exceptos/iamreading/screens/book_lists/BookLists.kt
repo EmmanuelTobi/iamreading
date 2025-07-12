@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.drop
 import org.exceptos.iamreading.data.model.BookStatus
 import org.exceptos.iamreading.handlers.ResultHandler
 import org.exceptos.iamreading.views.BookItem
+import org.exceptos.iamreading.widgets.BottomSheets
 import org.exceptos.iamreading.widgets.LoadingView
 import org.exceptos.iamreading.widgets.TextWidget
 
@@ -26,8 +27,12 @@ fun BookLists(
     status: BookStatus = BookStatus.WANT_TO_READ,
     onNavigateToAddBook: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    viewModel: BookListsViewModel = remember { BookListsViewModel() }
+    viewModel: BookListsViewModel = remember {
+        BookListsViewModel()
+    }
 ) {
+
+    val openBottomSheet = remember { mutableStateOf(false) }
     
     Scaffold(
         topBar = {
@@ -49,11 +54,47 @@ fun BookLists(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onNavigateToAddBook) {
-                Icon(Icons.Filled.Add, contentDescription = "Add Book")
+
+            if(openBottomSheet.value == true) {
+
+                BottomSheets(
+                    onDismiss = {
+                        openBottomSheet.value = false
+                        viewModel.books.drop(1)
+                        onNavigateBack()
+                    },
+                    content = {
+                        AddBook(
+                            onNavigateBack = {
+                                viewModel.books.drop(1)
+                                onNavigateBack()
+                            }
+                        )
+                    },
+                    title = "Add New Book"
+                )
+
+            } else {
+
+                FloatingActionButton(
+                    onClick = {
+                        onNavigateToAddBook()
+                        //openBottomSheet.value = true    ///will be revisiting later for better implementation
+                    }) {
+                    Icon(Icons.Filled.Add, contentDescription = "Add Book")
+                }
+
             }
+
         }
     ) { paddingValues ->
+
+        LaunchedEffect(
+            key1 = status,
+            block = {
+                viewModel.setBookStatus(status)
+            }
+        )
 
         val books by viewModel.books.collectAsState()
         books.let { result ->

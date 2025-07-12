@@ -7,10 +7,17 @@ import org.exceptos.iamreading.data.model.BookStatus
 
 class BookRepository(private val bookDao: BookDao) {
 
+    var bookStatus : BookStatus = BookStatus.CURRENTLY_READING
+
     fun getAllBooks(): Flow<List<Book>> = bookDao.getAllBooks()
 
     fun getBooksByStatus(status: String): Flow<List<Book>> =
         bookDao.getBooksByStatus(status)
+
+//    fun setBookStatus(status: BookStatus) {
+//        bookStatus = status
+//        println(bookStatus)
+//    }
 
     suspend fun insertBook(
         title: String,
@@ -19,6 +26,7 @@ class BookRepository(private val bookDao: BookDao) {
         imageUrl: String?,
         status: String
     ) {
+
         val book = Book(
             title = title,
             author = author,
@@ -26,7 +34,10 @@ class BookRepository(private val bookDao: BookDao) {
             imageUrl = imageUrl,
             status = status
         )
+
+        println(book.author)
         bookDao.insertBook(book)
+
     }
 
     suspend fun deleteBook(book: Book) = bookDao.deleteBook(book)
