@@ -7,6 +7,7 @@ import org.exceptos.iamreading.data.dao.BookNoteDao
 import org.exceptos.iamreading.data.dao.StatsDao
 import org.exceptos.iamreading.data.db.AppDatabase
 import org.exceptos.iamreading.data.model.BookStatus
+import org.exceptos.iamreading.screens.home.HomeViewmodel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -16,6 +17,8 @@ expect fun platformModule(): Module
 fun appModule() = module {
 
     factory { BookListsViewModel(status = BookStatus.CURRENTLY_READING) }
+
+    factory { HomeViewmodel() }
 
     single<BookDao>(named("PrimaryBookDao")) {
         get<AppDatabase>().getBookDao()
@@ -32,7 +35,8 @@ fun appModule() = module {
     includes(platformModule())
 
     single { BookRepository(
-        bookDao = get(named("PrimaryBookDao"))
+        bookDao = get(named("PrimaryBookDao")),
+        statsDao = get(named("StatsDao"))
     )}
 
 }

@@ -22,6 +22,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import iamreading.composeapp.generated.resources.Res
 import iamreading.composeapp.generated.resources.book_one
 import iamreading.composeapp.generated.resources.book_two
@@ -105,7 +108,12 @@ fun Home(onNavigateToBookLists: (BookStatus) -> Unit) {
 }
 
 @Composable
-fun LibraryContent(paddingValues: PaddingValues, onNavigateToBookLists: (BookStatus) -> Unit) {
+fun LibraryContent(
+    paddingValues: PaddingValues,
+    onNavigateToBookLists: (BookStatus) -> Unit,
+    viewModel: HomeViewmodel = remember {
+    HomeViewmodel()
+}) {
     var selectedBookStatus by remember { mutableStateOf<BookStatus?>(null) }
 
     if (selectedBookStatus != null) {
@@ -113,86 +121,99 @@ fun LibraryContent(paddingValues: PaddingValues, onNavigateToBookLists: (BookSta
         return
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-    ) {
+    LaunchedEffect(
+        key1 = "library",
+        block = {
+            viewModel.setLibraryStats()
+        }
+    )
+
+    viewModel.libraryStats.collectAsState().let {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+                .padding(paddingValues)
         ) {
-            // My Library Section
-            TextWidget(
-                text = "My Library",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                // My Library Section
+                TextWidget(
+                    text = "My Library",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
 
-            // Library Items
-            LibraryItem(
-                drawableResource = Res.drawable.reading,
-                title = "Currently Reading",
-                count = "3 items",
-                onClick = {
-                    selectedBookStatus = BookStatus.CURRENTLY_READING
-                    onNavigateToBookLists(selectedBookStatus!!)
-                }
-            )
-            LibraryItem(
-                drawableResource = Res.drawable.toread,
-                title = "Want to Read",
-                count = "15 items",
-                onClick = {
-                    selectedBookStatus = BookStatus.WANT_TO_READ
-                    onNavigateToBookLists(selectedBookStatus!!)
-                }
-            )
-            LibraryItem(
-                drawableResource = Res.drawable.done,
-                title = "Finished",
-                count = "22 items",
-                onClick = {
-                    selectedBookStatus = BookStatus.FINISHED
-                    onNavigateToBookLists(selectedBookStatus!!)
-                }
-            )
+                // Library Items
+                LibraryItem(
+                    drawableResource = Res.drawable.reading,
+                    title = "Currently Reading",
+                    count = "${it.value?.currentlyReading.toString()} books",
+                    onClick = {
+                        println(viewModel.libraryStats.value)
+                        selectedBookStatus = BookStatus.CURRENTLY_READING
+                        onNavigateToBookLists(selectedBookStatus!!)
+                    }
+                )
+                LibraryItem(
+                    drawableResource = Res.drawable.toread,
+                    title = "Want to Read",
+                    count = "${it.value?.toRead} books",
+                    onClick = {
+                        selectedBookStatus = BookStatus.WANT_TO_READ
+                        onNavigateToBookLists(selectedBookStatus!!)
+                    }
+                )
+                LibraryItem(
+                    drawableResource = Res.drawable.done,
+                    title = "Finished",
+                    count = "${it.value?.read} books",
+                    onClick = {
+                        selectedBookStatus = BookStatus.FINISHED
+                        onNavigateToBookLists(selectedBookStatus!!)
+                    }
+                )
 
-            Spacer(
-                modifier = Modifier.padding(12.dp)
-            )
+                Spacer(
+                    modifier = Modifier.padding(12.dp)
+                )
 
-            // My History Section
-            TextWidget(
-                text = "My History",
-                fontSize = 18.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Medium,
-            )
+                // My History Section
+                TextWidget(
+                    text = "My History",
+                    fontSize = 18.sp,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Medium,
+                )
 
-            // Book Items
-            BookItem(
-                drawableResource = Res.drawable.book_one,
-                title = "The Silent Patient",
-                description = "A gripping psychological thriller",
-                author = "Alex Michaelides"
-            )
-            BookItem(
-                drawableResource = Res.drawable.book_one,
-                title = "Where the Crawdads Sing",
-                description = "A coming-of-age story set in the marshes",
-                author = "Delia Owens"
-            )
-            BookItem(
-                drawableResource = Res.drawable.book_two,
-                title = "The Seven Husbands of Evelyn Hugo",
-                description = "A captivating tale of a Hollywood icon",
-                author = "Taylor Jenkins Reid"
-            )
+                // Book Items
+                BookItem(
+                    drawableResource = Res.drawable.book_one,
+                    title = "The Silent Patient",
+                    description = "A gripping psychological thriller",
+                    author = "Alex Michaelides"
+                )
+                BookItem(
+                    drawableResource = Res.drawable.book_one,
+                    title = "Where the Crawdads Sing",
+                    description = "A coming-of-age story set in the marshes",
+                    author = "Delia Owens"
+                )
+                BookItem(
+                    drawableResource = Res.drawable.book_two,
+                    title = "The Seven Husbands of Evelyn Hugo",
+                    description = "A captivating tale of a Hollywood icon",
+                    author = "Taylor Jenkins Reid"
+                )
+            }
         }
+
     }
+
 }

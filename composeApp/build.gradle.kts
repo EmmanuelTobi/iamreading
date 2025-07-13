@@ -67,6 +67,8 @@ kotlin {
             implementation(libs.mvvm.flow) // Flow support
             implementation(libs.mvvm.compose) // Compose Multiplatform support
             implementation(libs.mvvm.flow.compose) // Flow Compose bindings
+
+            implementation(libs.kotlinx.datetime)
         }
     }
 }

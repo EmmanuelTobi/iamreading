@@ -80,13 +80,6 @@ fun AddBook(
                 onClick = {
 
                     if (title.isNotBlank() && author.isNotBlank()) {
-                        val book = Book(
-                            title = title,
-                            author = author,
-                            description = description,
-                            imageUrl = null,
-                            status = BookStatus.WANT_TO_READ.toString()
-                        )
 
                         bookListViewModel.addBook(
                             title = title,

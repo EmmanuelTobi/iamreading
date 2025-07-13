@@ -1,6 +1,5 @@
 package org.exceptos.iamreading.screens.book_lists
 
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items

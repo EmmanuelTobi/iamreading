@@ -1,11 +1,15 @@
 package org.exceptos.iamreading.repo
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.datetime.Clock.System
 import org.exceptos.iamreading.data.dao.BookDao
+import org.exceptos.iamreading.data.dao.StatsDao
 import org.exceptos.iamreading.data.model.Book
 import org.exceptos.iamreading.data.model.BookStatus
+import org.exceptos.iamreading.data.model.Stats
 
-class BookRepository(private val bookDao: BookDao) {
+class BookRepository(private val bookDao: BookDao, private val statsDao: StatsDao) {
 
     var bookStatus : BookStatus = BookStatus.CURRENTLY_READING
 
@@ -14,10 +18,37 @@ class BookRepository(private val bookDao: BookDao) {
     fun getBooksByStatus(status: String): Flow<List<Book>> =
         bookDao.getBooksByStatus(status)
 
-//    fun setBookStatus(status: BookStatus) {
-//        bookStatus = status
-//        println(bookStatus)
-//    }
+    fun getBookStatByType(type: String) : Flow<Stats?> {
+        return statsDao.getStatsByType(type)
+    }
+
+    suspend fun setBookStat(type: String) {
+        val existingStats: Stats? = getBookStatByType(type).firstOrNull()
+
+        if (existingStats == null) {
+            println("Stat for type '$type' not found. Inserting new stat.")
+            val newStat = Stats(
+                statsType = type,
+                statsCount = 1,
+                lastUpdated = System.now().toString() // Use Clock.System
+            )
+            statsDao.insert(newStat)
+        } else {
+
+            println("Stat for type '$type' found. Updating count from ${existingStats.statsCount}.")
+
+            val updatedCount = existingStats.statsCount + 1
+            val newLastUpdated = System.now().toString()
+
+            statsDao.updateStatsByType(
+                type = type,
+                value = updatedCount,
+                lastUpdated = newLastUpdated
+            )
+
+        }
+
+    }
 
     suspend fun insertBook(
         title: String,

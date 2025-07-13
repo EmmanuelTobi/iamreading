@@ -1,10 +1,13 @@
 package org.exceptos.iamreading.screens.book_lists
 
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.exceptos.iamreading.data.model.Book
 import org.exceptos.iamreading.data.model.BookStatus
 import org.exceptos.iamreading.handlers.ResultHandler
@@ -20,10 +23,6 @@ class BookListsViewModel(status: BookStatus? = null) : ViewModel(), KoinComponen
 
     private val _selectedBook = MutableStateFlow<Book?>(null)
     val selectedBook: StateFlow<Book?> = _selectedBook.asStateFlow()
-
-//    init {
-//        loadBooks(status ?: BookStatus.CURRENTLY_READING )
-//    }
 
     fun setBookStatus(status: BookStatus) {
         bookRepository.bookStatus = status
@@ -52,10 +51,11 @@ class BookListsViewModel(status: BookStatus? = null) : ViewModel(), KoinComponen
         status: BookStatus
     ) {
 
-        println(bookRepository.bookStatus);
-
         viewModelScope.launch {
-            bookRepository.insertBook(title, author, description, imageUrl, status.toString())
+            withContext(Dispatchers.IO) {
+                bookRepository.insertBook(title, author, description, imageUrl, status.toString())
+                bookRepository.setBookStat(status.toString())
+            }
         }
     }
 
