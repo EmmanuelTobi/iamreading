@@ -10,7 +10,7 @@ data class Book(
     val title: String,
     val author: String,
     val description: String,
-    val imageUrl: String?,
+    val imageUrl: String,
     val status: String,
-    val totalNotes: Int? = 0
+    val totalNotes: Int = 0
 )

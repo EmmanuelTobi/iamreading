@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import org.exceptos.iamreading.screens.book_details.BookDetails
 import org.exceptos.iamreading.screens.book_lists.AddBook
 import org.exceptos.iamreading.screens.book_lists.BookLists
 import org.exceptos.iamreading.screens.home.Home
@@ -29,6 +30,9 @@ fun NavigationHostHandler(navController: NavHostController) {
                 },
                 onNavigateBack = {
                     navController.popBackStack()
+                },
+                onNavigateToBookDetails = { bookId ->
+                    navController.navigate(NavigationObjects.BookDetailsScreen(bookId))
                 }
             )
         }
@@ -40,5 +44,15 @@ fun NavigationHostHandler(navController: NavHostController) {
                 },
             )
         }
+
+        composable<NavigationObjects.BookDetailsScreen> {
+            BookDetails(
+                bookId = it.toRoute<NavigationObjects.BookDetailsScreen>().bookId,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
     }
 }

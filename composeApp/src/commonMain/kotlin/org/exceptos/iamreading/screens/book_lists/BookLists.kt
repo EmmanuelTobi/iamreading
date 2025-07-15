@@ -1,5 +1,6 @@
 package org.exceptos.iamreading.screens.book_lists
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,6 +27,7 @@ fun BookLists(
     status: BookStatus = BookStatus.WANT_TO_READ,
     onNavigateToAddBook: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
+    onNavigateToBookDetails: (Int) -> Unit = {},
     viewModel: BookListsViewModel = remember {
         BookListsViewModel()
     }
@@ -125,13 +127,19 @@ fun BookLists(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
 
-                            items(result.data) { book ->
-                                BookItem(
-                                    drawableResource = null,
-                                    title = book.title,
-                                    description = book.description,
-                                    author = book.author
-                                )
+                            items(items = result.data) { book ->
+                                Box (
+                                    Modifier.clickable {
+                                        onNavigateToBookDetails(book.id)
+                                    }
+                                ) {
+                                    BookItem(
+                                        drawableResource = null,
+                                        title = book.title,
+                                        description = book.description,
+                                        author = book.author
+                                    )
+                                }
                             }
 
                         }

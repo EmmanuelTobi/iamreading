@@ -17,6 +17,8 @@ class NavigationObjects {
     object AddBookScreen
 
     @Serializable
-    object BookDetailsScreen
+    data class BookDetailsScreen (
+        val bookId: Int
+    )
 
 }

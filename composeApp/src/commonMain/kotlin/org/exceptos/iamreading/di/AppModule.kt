@@ -36,7 +36,8 @@ fun appModule() = module {
 
     single { BookRepository(
         bookDao = get(named("PrimaryBookDao")),
-        statsDao = get(named("StatsDao"))
+        statsDao = get(named("StatsDao")),
+        noteDao = get(named("BookNotesDao"))
     )}
 
 }

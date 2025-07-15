@@ -4,12 +4,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.Clock.System
 import org.exceptos.iamreading.data.dao.BookDao
+import org.exceptos.iamreading.data.dao.BookNoteDao
 import org.exceptos.iamreading.data.dao.StatsDao
 import org.exceptos.iamreading.data.model.Book
+import org.exceptos.iamreading.data.model.BookNotes
 import org.exceptos.iamreading.data.model.BookStatus
 import org.exceptos.iamreading.data.model.Stats
 
-class BookRepository(private val bookDao: BookDao, private val statsDao: StatsDao) {
+class BookRepository(
+    private val bookDao: BookDao,
+    private val statsDao: StatsDao,
+    private val noteDao: BookNoteDao) {
 
     var bookStatus : BookStatus = BookStatus.CURRENTLY_READING
 
@@ -17,6 +22,8 @@ class BookRepository(private val bookDao: BookDao, private val statsDao: StatsDa
 
     fun getBooksByStatus(status: String): Flow<List<Book>> =
         bookDao.getBooksByStatus(status)
+
+    suspend fun getBookById(id: Int): Flow<Book?> = bookDao.getBookById(id)
 
     fun getBookStatByType(type: String) : Flow<Stats?> {
         return statsDao.getStatsByType(type)
@@ -62,14 +69,29 @@ class BookRepository(private val bookDao: BookDao, private val statsDao: StatsDa
             title = title,
             author = author,
             description = description,
-            imageUrl = imageUrl,
+            imageUrl = imageUrl.toString(),
             status = status,
             totalNotes = 0
         )
 
         println(book.author)
         bookDao.insertBook(book)
+    }
 
+    fun addBookNote(description: String, bookName: String, noteFromPage: Int) {
+        val bookNote = BookNotes(
+            description = description,
+            bookName = bookName,
+            noteFromPage = noteFromPage,
+            dateAdded = System.now().toString(),
+            dateModified = System.now().toString(),
+            noteImage = ""
+        )
+        noteDao.insertAll(bookNote)
+    }
+
+    fun getBookNotes(bookName: String): Flow<List<BookNotes>> {
+        return noteDao.findByTitle(bookName)
     }
 
     suspend fun deleteBook(book: Book) = bookDao.deleteBook(book)

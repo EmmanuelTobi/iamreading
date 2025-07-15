@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "99a73b9c1cf8f29c7568b4fdc5a75214",
+    "identityHash": "fcd127631b9b3e2ac75e5646fe8ace05",
     "entities": [
       {
         "tableName": "books",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `author` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT, `status` TEXT NOT NULL, `totalNotes` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `author` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `status` TEXT NOT NULL, `totalNotes` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -35,7 +35,8 @@
           {
             "fieldPath": "imageUrl",
             "columnName": "imageUrl",
-            "affinity": "TEXT"
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "status",
@@ -46,7 +47,8 @@
           {
             "fieldPath": "totalNotes",
             "columnName": "totalNotes",
-            "affinity": "INTEGER"
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -149,7 +151,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '99a73b9c1cf8f29c7568b4fdc5a75214')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fcd127631b9b3e2ac75e5646fe8ace05')"
     ]
   }
 }
