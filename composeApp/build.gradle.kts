@@ -10,6 +10,12 @@ plugins {
     alias(libs.plugins.room)
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "iamreading.composeapp.generated.resources"
+    generateResClass = always
+}
+
 kotlin {
     androidTarget {
         compilations.all {
