@@ -29,6 +29,7 @@ import org.exceptos.iamreading.data.model.BookStatus
 import org.exceptos.iamreading.themes.AccentGreen
 import org.exceptos.iamreading.themes.Primary
 import org.exceptos.iamreading.views.BookItem
+import org.exceptos.iamreading.widgets.IamReadingTextField
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -200,7 +201,7 @@ fun BookDetails(
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(Modifier.height(8.dp))
-                            OutlinedTextField(
+                            IamReadingTextField(
                                 value = currentPage,
                                 onValueChange = {
                                     currentPage = it
@@ -208,9 +209,8 @@ fun BookDetails(
                                         viewModel.updateCurrentPage(page)
                                     }
                                 },
-                                label = { Text("Page Number") },
+                                label = "Page Number",
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
                                 singleLine = true
                             )
                         }
@@ -341,18 +341,19 @@ fun BookDetails(
                 title = { Text("Add Note") },
                 text = {
                     Column {
-                        OutlinedTextField(
+                        IamReadingTextField(
                             value = noteText,
                             onValueChange = { noteText = it },
-                            label = { Text("Note") },
+                            label = "Note",
                             modifier = Modifier.fillMaxWidth()
                         )
                         Spacer(Modifier.height(8.dp))
-                        OutlinedTextField(
+                        IamReadingTextField(
                             value = currentPage,
                             onValueChange = { currentPage = it },
-                            label = { Text("Page Number") },
-                            modifier = Modifier.fillMaxWidth()
+                            label = "Page Number",
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true
                         )
                     }
                 },
@@ -588,12 +589,11 @@ private fun AiInsightSection(
                         else "What would you like to know about this book?"
                     )
                     Spacer(Modifier.height(12.dp))
-                    OutlinedTextField(
+                    IamReadingTextField(
                         value = question,
                         onValueChange = { question = it },
-                        label = { Text("Ask anything...") },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
+                        label = "Ask anything...",
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             },

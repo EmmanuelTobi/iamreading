@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.exceptos.iamreading.data.model.BookStatus
+import org.exceptos.iamreading.widgets.IamReadingTextField
 import org.exceptos.iamreading.widgets.TextWidget
 import iamreading.composeapp.generated.resources.Res
 import iamreading.composeapp.generated.resources.ic_add
@@ -92,52 +93,47 @@ fun AddBook(
                 }
             }
 
-            OutlinedTextField(
+            IamReadingTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Title") },
+                label = "Title",
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
                 singleLine = true
             )
 
-            OutlinedTextField(
+            IamReadingTextField(
                 value = author,
                 onValueChange = { author = it },
-                label = { Text("Author") },
+                label = "Author",
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
                 singleLine = true
             )
 
-            OutlinedTextField(
+            IamReadingTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text("Description (optional)") },
+                label = "Description (optional)",
                 modifier = Modifier.fillMaxWidth(),
-                minLines = 3,
-                shape = RoundedCornerShape(12.dp)
+                minLines = 3
             )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                OutlinedTextField(
+                IamReadingTextField(
                     value = totalPages,
                     onValueChange = { totalPages = it },
-                    label = { Text("Total Pages (optional)") },
+                    label = "Total Pages (optional)",
                     modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(12.dp),
                     singleLine = true
                 )
 
-                OutlinedTextField(
+                IamReadingTextField(
                     value = currentPage,
                     onValueChange = { currentPage = it },
-                    label = { Text("Current Page (optional)") },
+                    label = "Current Page (optional)",
                     modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(12.dp),
                     singleLine = true
                 )
             }

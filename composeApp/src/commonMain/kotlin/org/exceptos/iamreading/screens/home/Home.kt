@@ -17,8 +17,6 @@ import org.jetbrains.compose.resources.painterResource
 import iamreading.composeapp.generated.resources.Res
 import iamreading.composeapp.generated.resources.ic_menu
 import iamreading.composeapp.generated.resources.ic_search
-import iamreading.composeapp.generated.resources.book_one
-import iamreading.composeapp.generated.resources.book_two
 import iamreading.composeapp.generated.resources.done
 import iamreading.composeapp.generated.resources.reading
 import iamreading.composeapp.generated.resources.toread
@@ -43,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import iamreading.composeapp.generated.resources.ic_add
+import iamreading.composeapp.generated.resources.ic_book
 import org.exceptos.iamreading.data.model.BookStatus
 import org.exceptos.iamreading.screens.book_lists.BookLists
 import org.exceptos.iamreading.views.BookItem
@@ -64,7 +63,7 @@ fun Home(
                     Text(
                         "IAM Reading",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp
+                        fontSize = 16.sp
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -72,7 +71,7 @@ fun Home(
                 ),
                 navigationIcon = {
                     Icon(
-                        painter = painterResource(Res.drawable.ic_menu),
+                        painter = painterResource(Res.drawable.ic_book),
                         contentDescription = "Menu",
                         tint = MaterialTheme.colorScheme.primary
                     )
