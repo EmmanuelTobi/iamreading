@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "fcd127631b9b3e2ac75e5646fe8ace05",
+    "identityHash": "1ef0614b489bca97e9468aac3a494239",
     "entities": [
       {
         "tableName": "books",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `author` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `status` TEXT NOT NULL, `totalNotes` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `author` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `status` TEXT NOT NULL, `totalNotes` INTEGER NOT NULL, `totalPages` INTEGER NOT NULL, `currentPage` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -47,6 +47,18 @@
           {
             "fieldPath": "totalNotes",
             "columnName": "totalNotes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalPages",
+            "columnName": "totalPages",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentPage",
+            "columnName": "currentPage",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -151,7 +163,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fcd127631b9b3e2ac75e5646fe8ace05')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1ef0614b489bca97e9468aac3a494239')"
     ]
   }
 }

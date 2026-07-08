@@ -6,8 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import org.jetbrains.compose.resources.painterResource
+import iamreading.composeapp.generated.resources.Res
+import iamreading.composeapp.generated.resources.ic_close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,7 +52,7 @@ fun BottomSheets(
                     sheetState.isVisible)
                 }) {
                     Icon(
-                        imageVector = Icons.Default.Close,
+                        painter = painterResource(Res.drawable.ic_close),
                         contentDescription = "Close"
                     )
                 }

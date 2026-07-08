@@ -29,6 +29,8 @@ interface BookDao {
             "imageUrl = :imageUrl, " +
             "status = :status, " +
             "totalNotes = :totalNotes, " +
+            "totalPages = :totalPages, " +
+            "currentPage = :currentPage, " +
             "description = :description WHERE " +
             "id = :id")
     suspend fun updateBook(
@@ -38,7 +40,9 @@ interface BookDao {
         description: String,
         imageUrl: String?,
         status: String,
-        totalNotes: Int
+        totalNotes: Int,
+        totalPages: Int = 0,
+        currentPage: Int = 0
     )
 
     @Delete

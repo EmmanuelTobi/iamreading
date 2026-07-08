@@ -62,7 +62,9 @@ class BookRepository(
         author: String,
         description: String,
         imageUrl: String?,
-        status: String
+        status: String,
+        totalPages: Int = 0,
+        currentPage: Int = 0
     ) {
 
         val book = Book(
@@ -71,7 +73,9 @@ class BookRepository(
             description = description,
             imageUrl = imageUrl.toString(),
             status = status,
-            totalNotes = 0
+            totalNotes = 0,
+            totalPages = totalPages,
+            currentPage = currentPage
         )
 
         println(book.author)
@@ -104,8 +108,11 @@ class BookRepository(
         author: String,
         description: String,
         imageUrl: String?,
-        status: BookStatus
+        status: BookStatus,
+        totalNotes: Int = 0,
+        totalPages: Int = 0,
+        currentPage: Int = 0
     ) {
-        bookDao.updateBook(id, title, author, description, imageUrl, status.name, 0)
+        bookDao.updateBook(id, title, author, description, imageUrl, status.name, totalNotes, totalPages, currentPage)
     }
 }
