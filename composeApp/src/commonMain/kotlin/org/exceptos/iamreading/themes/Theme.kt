@@ -4,45 +4,54 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Primary,
+    onPrimary = Color.White,
+    secondary = Secondary,
+    onSecondary = Color.White,
+    tertiary = AccentGreen,
+    onTertiary = Color.White,
+    background = BackgroundDark,
+    onBackground = Color.White,
+    surface = SurfaceDark,
+    onSurface = Color.White
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = Primary,
     onPrimary = Color.White,
+    secondary = Secondary,
     onSecondary = Color.White,
+    tertiary = AccentGreen,
     onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    background = BackgroundLight,
+    onBackground = Color(0xFF1F2937),
+    surface = SurfaceLight,
+    onSurface = Color(0xFF1F2937)
 )
 
 @Composable
-fun IamReadingAndroidTheme(
+fun IamReadingTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-
-    val colorScheme = when {
-        dynamicColor -> if (darkTheme) DarkColorScheme else LightColorScheme
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content
     )
+}
+
+@Deprecated("Use IamReadingTheme instead", ReplaceWith("IamReadingTheme(darkTheme, content)"))
+@Composable
+fun IamReadingAndroidTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    IamReadingTheme(darkTheme = darkTheme, content = content)
 }

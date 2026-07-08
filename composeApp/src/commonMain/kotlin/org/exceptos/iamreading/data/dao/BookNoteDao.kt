@@ -10,18 +10,18 @@ import org.exceptos.iamreading.data.model.BookNotes
 @Dao
 interface BookNoteDao {
     @Query("SELECT * FROM book_notes")
-    fun getAll(): List<BookNotes>
+    suspend fun getAll(): List<BookNotes>
 
     @Query("SELECT * FROM book_notes WHERE bookName LIKE :title LIMIT 1")
     fun findByTitle(title: String): Flow<List<BookNotes>>
 
     @Insert
-    fun insertAll(vararg bookNotes: BookNotes)
+    suspend fun insertAll(vararg bookNotes: BookNotes)
 
     @Delete
-    fun delete(bookNote: BookNotes)
+    suspend fun delete(bookNote: BookNotes)
 
     @Query("DELETE FROM book_notes")
-    fun deleteAll()
+    suspend fun deleteAll()
 
 }

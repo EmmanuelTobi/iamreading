@@ -10,15 +10,15 @@ import org.exceptos.iamreading.data.model.Stats
 @Dao
 interface StatsDao {
     @Query("SELECT * FROM stats")
-    fun getAll(): List<Stats>
+    suspend fun getAll(): List<Stats>
 
     @Query("SELECT * FROM stats WHERE statsType = :type")
     fun getStatsByType(type: String): Flow<Stats?>
 
     @Query("UPDATE stats SET statsCount = :value, lastUpdated = :lastUpdated WHERE statsType = :type")
-    fun updateStatsByType(type: String, value: Int, lastUpdated: String)
+    suspend fun updateStatsByType(type: String, value: Int, lastUpdated: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(stats: Stats)
+    suspend fun insert(stats: Stats)
 
 }

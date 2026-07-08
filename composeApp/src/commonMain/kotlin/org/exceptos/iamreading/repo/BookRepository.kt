@@ -78,7 +78,7 @@ class BookRepository(
         bookDao.insertBook(book)
     }
 
-    fun addBookNote(description: String, bookName: String, noteFromPage: Int) {
+    suspend fun addBookNote(description: String, bookName: String, noteFromPage: Int) {
         val bookNote = BookNotes(
             description = description,
             bookName = bookName,

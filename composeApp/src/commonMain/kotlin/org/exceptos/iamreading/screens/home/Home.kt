@@ -9,18 +9,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,11 +26,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import iamreading.composeapp.generated.resources.Res
 import iamreading.composeapp.generated.resources.book_one
 import iamreading.composeapp.generated.resources.book_two
@@ -46,64 +41,46 @@ import org.exceptos.iamreading.views.BookItem
 import org.exceptos.iamreading.views.LibraryItem
 import org.exceptos.iamreading.widgets.TextWidget
 
-enum class Screen {
-    ForYou, Explore, MyLibrary, Settings
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(onNavigateToBookLists: (BookStatus) -> Unit) {
-    var currentScreen by remember { mutableStateOf(Screen.MyLibrary) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("IAM Reading") },
+                title = {
+                    Text(
+                        "IAM Reading",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+//                navigationIcon = {
+//                    Icon(
+//                        imageVector = Icons.Default.Edit,
+//                        contentDescription = "Menu",
+//                        tint = MaterialTheme.colorScheme.primary
+//                    )
+//                },
                 actions = {
                     IconButton(onClick = {}) {
-                        Icon(Icons.Filled.Search, contentDescription = "Search")
+                        Icon(
+                            Icons.Filled.Search,
+                            contentDescription = "Search",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
             )
-        },
-        bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Home, contentDescription = "For You") },
-                    label = { Text("For You") },
-                    selected = currentScreen == Screen.ForYou,
-                    onClick = { currentScreen = Screen.ForYou }
-                )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Search, contentDescription = "Explore") },
-                    label = { Text("Explore") },
-                    selected = currentScreen == Screen.Explore,
-                    onClick = { currentScreen = Screen.Explore }
-                )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Default.AccountBox, contentDescription = "My Library") },
-                    label = { Text("My Library") },
-                    selected = currentScreen == Screen.MyLibrary,
-                    onClick = { currentScreen = Screen.MyLibrary }
-                )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") },
-                    label = { Text("Settings") },
-                    selected = currentScreen == Screen.Settings,
-                    onClick = { currentScreen = Screen.Settings }
-                )
-            }
         }
     ) { paddingValues ->
-        when (currentScreen) {
-            Screen.MyLibrary -> LibraryContent(
-                paddingValues,
-                onNavigateToBookLists
-            )
-            Screen.ForYou -> Text("For You Screen")
-            Screen.Explore -> Text("Explore Screen")
-            Screen.Settings -> Text("Settings Screen")
-        }
+        LibraryContent(
+            paddingValues,
+            onNavigateToBookLists
+        )
     }
 }
 
@@ -138,16 +115,16 @@ fun LibraryContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(20.dp)
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(28.dp)
             ) {
                 // My Library Section
                 TextWidget(
                     text = "My Library",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 // Library Items
@@ -155,6 +132,7 @@ fun LibraryContent(
                     drawableResource = Res.drawable.reading,
                     title = "Currently Reading",
                     count = "${it.value?.currentlyReading.toString()} books",
+                    color = MaterialTheme.colorScheme.primary,
                     onClick = {
                         println(viewModel.libraryStats.value)
                         selectedBookStatus = BookStatus.CURRENTLY_READING
@@ -165,6 +143,7 @@ fun LibraryContent(
                     drawableResource = Res.drawable.toread,
                     title = "Want to Read",
                     count = "${it.value?.toRead} books",
+                    color = MaterialTheme.colorScheme.secondary,
                     onClick = {
                         selectedBookStatus = BookStatus.WANT_TO_READ
                         onNavigateToBookLists(selectedBookStatus!!)
@@ -174,6 +153,7 @@ fun LibraryContent(
                     drawableResource = Res.drawable.done,
                     title = "Finished",
                     count = "${it.value?.read} books",
+                    color = MaterialTheme.colorScheme.tertiary,
                     onClick = {
                         selectedBookStatus = BookStatus.FINISHED
                         onNavigateToBookLists(selectedBookStatus!!)
@@ -181,15 +161,15 @@ fun LibraryContent(
                 )
 
                 Spacer(
-                    modifier = Modifier.padding(12.dp)
+                    modifier = Modifier.padding(8.dp)
                 )
 
                 // My History Section
                 TextWidget(
                     text = "My History",
-                    fontSize = 18.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Medium,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.SemiBold,
                 )
 
                 // Book Items
