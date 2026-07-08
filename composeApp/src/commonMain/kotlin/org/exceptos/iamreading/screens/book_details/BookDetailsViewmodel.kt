@@ -31,7 +31,11 @@ class BookDetailsViewModel : ViewModel(), KoinComponent {
     fun loadBook(id: Int) {
         viewModelScope.launch {
             bookRepository.getBookById(id).let { book ->
-                _book.value = book.firstOrNull()
+                val bookValue = book.firstOrNull()
+                _book.value = bookValue
+                bookValue?.let {
+                    _currentPage.value = it.currentPage
+                }
             }
         }
     }
@@ -45,7 +49,10 @@ class BookDetailsViewModel : ViewModel(), KoinComponent {
                     author = currentBook.author,
                     description = currentBook.description,
                     imageUrl = currentBook.imageUrl,
-                    status = status
+                    status = status,
+                    totalNotes = currentBook.totalNotes,
+                    totalPages = currentBook.totalPages,
+                    currentPage = currentBook.currentPage
                 )
             }
         }
@@ -53,6 +60,21 @@ class BookDetailsViewModel : ViewModel(), KoinComponent {
 
     fun updateCurrentPage(page: Int) {
         _currentPage.value = page
+        _book.value?.let { currentBook ->
+            viewModelScope.launch {
+                bookRepository.updateBook(
+                    id = currentBook.id,
+                    title = currentBook.title,
+                    author = currentBook.author,
+                    description = currentBook.description,
+                    imageUrl = currentBook.imageUrl,
+                    status = BookStatus.valueOf(currentBook.status),
+                    totalNotes = currentBook.totalNotes,
+                    totalPages = currentBook.totalPages,
+                    currentPage = page
+                )
+            }
+        }
     }
 
     fun addBookNote(note: String, page: Int) {

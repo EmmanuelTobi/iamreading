@@ -71,7 +71,7 @@ class BookRepository(
             title = title,
             author = author,
             description = description,
-            imageUrl = imageUrl.toString(),
+            imageUrl = imageUrl ?: "",
             status = status,
             totalNotes = 0,
             totalPages = totalPages,

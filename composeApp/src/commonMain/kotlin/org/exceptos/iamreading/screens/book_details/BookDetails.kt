@@ -1,23 +1,35 @@
 package org.exceptos.iamreading.screens.book_details
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
+import org.jetbrains.compose.resources.painterResource
+import iamreading.composeapp.generated.resources.Res
+import iamreading.composeapp.generated.resources.ic_add
+import iamreading.composeapp.generated.resources.ic_arrow_left
+import iamreading.composeapp.generated.resources.ic_auto_awesome
+import iamreading.composeapp.generated.resources.ic_delete
+import iamreading.composeapp.generated.resources.ic_edit
+import iamreading.composeapp.generated.resources.ic_info
+import iamreading.composeapp.generated.resources.ic_sticky_note
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.exceptos.iamreading.data.model.Book
 import org.exceptos.iamreading.data.model.BookNotes
 import org.exceptos.iamreading.data.model.BookStatus
+import org.exceptos.iamreading.themes.AccentGreen
+import org.exceptos.iamreading.themes.Primary
 import org.exceptos.iamreading.views.BookItem
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,86 +53,192 @@ fun BookDetails(
     val bookNotes by viewModel.bookNotes.collectAsState()
     val currentBookPage by viewModel.currentPage.collectAsState()
 
+    LaunchedEffect(currentBookPage) {
+        currentPage = currentBookPage?.toString() ?: ""
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(book?.title ?: "Book Details") },
+                title = {
+                    Text(
+                        text = if (book?.status == BookStatus.CURRENTLY_READING.toString()) "Reading Progress" else "Book Details",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, "Back")
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_arrow_left),
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(28.dp)
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = { showEditDialog = true }) {
-                        Icon(Icons.Default.Edit, "Edit")
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_edit),
+                            contentDescription = "Edit",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                     IconButton(onClick = { showDeleteDialog = true }) {
-                        Icon(Icons.Default.Delete, "Delete")
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_delete),
+                            contentDescription = "Delete",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
             )
         }
     ) { padding ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            contentPadding = PaddingValues(20.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            // Book Info
             item {
                 book?.let { currentBook ->
                     BookItem(
                         drawableResource = null,
                         title = currentBook.title,
                         description = currentBook.description,
-                        author = currentBook.author
+                        author = currentBook.author,
+                        status = currentBook.status
                     )
                 }
             }
 
-            item {
-                AiInsightSection(
-                    book = book,
-                    notes = bookNotes,
-                    modifier = Modifier.fillMaxWidth(),
-                    viewModel = viewModel
-                )
-            }
-
-            item {
-                Text(
-                    "Reading Status",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(Modifier.height(8.dp))
-                BookStatusSection(book?.status, viewModel::updateBookStatus)
-            }
-
+            // Reading Progress Section (only for currently reading)
             if (book?.status == BookStatus.CURRENTLY_READING.toString()) {
                 item {
-                    Column {
-                        Text(
-                            "Current Page",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        OutlinedTextField(
-                            value = currentPage,
-                            onValueChange = { 
-                                currentPage = it
-                                it.toIntOrNull()?.let { page ->
-                                    viewModel.updateCurrentPage(page)
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // Hero card with progress
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Primary.copy(alpha = 0.08f)
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(20.dp)
+                            ) {
+                                // Placeholder image area (like the tree/reading image)
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(150.dp)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                painter = painterResource(Res.drawable.ic_info),
+                                contentDescription = null,
+                                tint = Primary.copy(alpha = 0.4f),
+                                modifier = Modifier.size(60.dp)
+                            )
                                 }
-                            },
-                            label = { Text("Page Number") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Progress percentage
+                val currentPageNum = currentBookPage ?: 0
+                val totalPages = book?.totalPages ?: 200
+                val progress = if (totalPages > 0) currentPageNum.toFloat() / totalPages else 0f
+
+                                Text(
+                                    text = "${(progress * 100).toInt()}%",
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                // Progress bar
+                                LinearProgressIndicator(
+                                    progress = { progress },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(8.dp)
+                                        .clip(RoundedCornerShape(4.dp)),
+                                    color = Primary,
+                                    trackColor = Primary.copy(alpha = 0.15f)
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                // Page info
+                                Text(
+                                    text = "Page $currentPageNum of ${book?.totalPages ?: 200}",
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                )
+                            }
+                        }
+
+                        // Current Page Input
+                        Column {
+                            Text(
+                                "Current Page",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            OutlinedTextField(
+                                value = currentPage,
+                                onValueChange = {
+                                    currentPage = it
+                                    it.toIntOrNull()?.let { page ->
+                                        viewModel.updateCurrentPage(page)
+                                    }
+                                },
+                                label = { Text("Page Number") },
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp),
+                                singleLine = true
+                            )
+                        }
                     }
                 }
+            }
 
+            // Reading Status Section
+            item {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        "Reading Status",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    BookStatusSection(book?.status, viewModel::updateBookStatus)
+                }
+            }
+
+            // Notes Section (only for currently reading)
+            if (book?.status == BookStatus.CURRENTLY_READING.toString()) {
                 item {
-                    Column {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -129,19 +247,69 @@ fun BookDetails(
                             Text(
                                 "Notes",
                                 style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
-                            Button(onClick = { showAddNoteDialog = true }) {
-                                Text("Add Note")
+                            Button(
+                                onClick = { showAddNoteDialog = true },
+                                shape = RoundedCornerShape(50),
+                                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.ic_add),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Text("Add Note", fontWeight = FontWeight.Medium)
                             }
                         }
-                        Spacer(Modifier.height(8.dp))
                     }
                 }
 
                 items(bookNotes) { note ->
                     NoteItem(note)
                 }
+            }
+
+            // Statistics Section (only for currently reading)
+            if (book?.status == BookStatus.CURRENTLY_READING.toString()) {
+                item {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            "Statistics",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+
+                        // Statistics items
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            StatItem(
+                                label = "Total Pages Read",
+                                value = "${currentBookPage ?: 0}"
+                            )
+                            StatItem(
+                                label = "Average Reading Pace",
+                                value = "20 pages/day"
+                            )
+                        }
+                    }
+                }
+            }
+
+            // AI Insights Section
+            item {
+                AiInsightSection(
+                    book = book,
+                    notes = bookNotes,
+                    modifier = Modifier.fillMaxWidth(),
+                    viewModel = viewModel
+                )
             }
         }
 
@@ -211,22 +379,60 @@ fun BookDetails(
 }
 
 @Composable
+private fun StatItem(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
 private fun BookStatusSection(
     currentStatus: String?,
     onStatusUpdate: (BookStatus) -> Unit
 ) {
-    Column {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         BookStatus.values().forEach { status ->
-            Row(
+            val isSelected = currentStatus == status.toString()
+            Card(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (isSelected) Primary.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                ),
+                onClick = { onStatusUpdate(status) }
             ) {
-                RadioButton(
-                    selected = currentStatus == status.toString(),
-                    onClick = { onStatusUpdate(status) }
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(status.toString().replace('_', ' '))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = isSelected,
+                        onClick = { onStatusUpdate(status) }
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = status.toString().replace('_', ' '),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+                    )
+                }
             }
         }
     }
@@ -236,22 +442,41 @@ private fun BookStatusSection(
 private fun NoteItem(note: BookNotes) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(1.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                note.description,
-                style = MaterialTheme.typography.bodyLarge
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.ic_sticky_note),
+                contentDescription = null,
+                tint = Primary,
+                modifier = Modifier.size(24.dp)
             )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                "Page ${note.noteFromPage}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                "Added on ${note.dateAdded}",
-                style = MaterialTheme.typography.bodySmall
-            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = note.description,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Page ${note.noteFromPage}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+            }
         }
     }
 }
@@ -268,50 +493,86 @@ private fun AiInsightSection(
     var question by remember { mutableStateOf("") }
     val aiResponse by viewModel.aiResponse.collectAsState()
 
-    Column(modifier = modifier) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
             "AI Insights",
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
         )
-        Spacer(Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Button(
-                onClick = { 
+                onClick = {
                     analyzeNotes = false
-                    showAiDialog = true 
+                    showAiDialog = true
                 },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(12.dp)
             ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_auto_awesome),
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(6.dp))
                 Text("Analyze Book")
             }
             Button(
-                onClick = { 
+                onClick = {
                     analyzeNotes = true
-                    showAiDialog = true 
+                    showAiDialog = true
                 },
                 modifier = Modifier.weight(1f),
-                enabled = notes.isNotEmpty()
+                enabled = notes.isNotEmpty(),
+                shape = RoundedCornerShape(12.dp)
             ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_sticky_note),
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(6.dp))
                 Text("Analyze Notes")
             }
         }
 
         aiResponse?.let { response ->
-            Spacer(Modifier.height(16.dp))
-            Surface(
+            Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant
-            ) {
-                Text(
-                    response,
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.bodyMedium
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = AccentGreen.copy(alpha = 0.08f)
                 )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_auto_awesome),
+                            contentDescription = null,
+                            tint = AccentGreen
+                        )
+                        Text(
+                            text = "AI Response",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = AccentGreen
+                        )
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = response,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
     }
@@ -322,16 +583,17 @@ private fun AiInsightSection(
             title = { Text(if (analyzeNotes) "Analyze Notes" else "Analyze Book") },
             text = {
                 Column {
-                    Text(if (analyzeNotes) 
-                        "What would you like to know about your notes?" 
+                    Text(
+                        if (analyzeNotes) "What would you like to know about your notes?"
                         else "What would you like to know about this book?"
                     )
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(12.dp))
                     OutlinedTextField(
                         value = question,
                         onValueChange = { question = it },
                         label = { Text("Ask anything...") },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
                     )
                 }
             },
@@ -342,13 +604,14 @@ private fun AiInsightSection(
                         showAiDialog = false
                         question = ""
                     },
-                    enabled = question.isNotEmpty()
+                    enabled = question.isNotEmpty(),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Ask AI")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { 
+                TextButton(onClick = {
                     showAiDialog = false
                     question = ""
                 }) {
