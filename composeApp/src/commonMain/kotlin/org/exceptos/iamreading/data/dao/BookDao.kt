@@ -38,9 +38,9 @@ interface BookDao {
         title: String,
         author: String,
         description: String,
-        imageUrl: String?,
+        imageUrl: String? = null,
         status: String,
-        totalNotes: Int,
+        totalNotes: Int = 0,
         totalPages: Int = 0,
         currentPage: Int = 0
     )

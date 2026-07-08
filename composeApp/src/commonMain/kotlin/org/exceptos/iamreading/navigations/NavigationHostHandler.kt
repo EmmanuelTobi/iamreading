@@ -18,6 +18,12 @@ fun NavigationHostHandler(navController: NavHostController) {
             Home(
                 onNavigateToBookLists = { status ->
                     navController.navigate(NavigationObjects.BookListsScreen(status))
+                },
+                onNavigateToAddBook = {
+                    navController.navigate(NavigationObjects.AddBookScreen)
+                },
+                onNavigateToBookDetails = { bookId ->
+                    navController.navigate(NavigationObjects.BookDetailsScreen(bookId))
                 }
             )
         }

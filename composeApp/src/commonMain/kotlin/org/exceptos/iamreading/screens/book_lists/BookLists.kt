@@ -4,13 +4,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.foundation.shape.RoundedCornerShape
+import org.jetbrains.compose.resources.painterResource
+import iamreading.composeapp.generated.resources.Res
+import iamreading.composeapp.generated.resources.ic_add
+import iamreading.composeapp.generated.resources.ic_arrow_left
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.drop
@@ -38,20 +41,38 @@ fun BookLists(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(getScreenTitle(status)) },
+                title = { 
+                    Text(
+                        getScreenTitle(status),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold
+                    ) 
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
                 navigationIcon = {
                     IconButton(onClick = {
                         viewModel.books.drop(1)
                         onNavigateBack()
                     }) {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Back")
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_arrow_left),
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(28.dp)
+                        )
                     }
                 },
-//                actions = {
-//                    IconButton(onClick = { onNavigateToAddBook() }) {
-//                        Icon(Icons.Filled.Add, contentDescription = "Add Book")
-//                    }
-//                }
+                actions = {
+                    IconButton(onClick = { onNavigateToAddBook() }) {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_add),
+                            contentDescription = "Add Book",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
             )
         },
         floatingActionButton = {
@@ -81,8 +102,13 @@ fun BookLists(
                     onClick = {
                         onNavigateToAddBook()
                         //openBottomSheet.value = true    ///will be revisiting later for better implementation
-                    }) {
-                    Icon(Icons.Filled.Add, contentDescription = "Add Book")
+                    },
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_add),
+                        contentDescription = "Add Book"
+                    )
                 }
 
             }

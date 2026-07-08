@@ -48,20 +48,32 @@ class BookListsViewModel(status: BookStatus? = null) : ViewModel(), KoinComponen
         author: String,
         description: String,
         imageUrl: String?,
-        status: BookStatus
+        status: BookStatus,
+        totalPages: Int = 0,
+        currentPage: Int = 0
     ) {
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                bookRepository.insertBook(title, author, description, imageUrl, status.toString())
+                bookRepository.insertBook(title, author, description, imageUrl, status.toString(), totalPages, currentPage)
                 bookRepository.setBookStat(status.toString())
             }
         }
     }
 
-    fun updateBook(id: Int, title: String, author: String, description: String, imageUrl: String?, status: BookStatus) {
+    fun updateBook(
+        id: Int,
+        title: String,
+        author: String,
+        description: String,
+        imageUrl: String?,
+        status: BookStatus,
+        totalNotes: Int = 0,
+        totalPages: Int = 0,
+        currentPage: Int = 0
+    ) {
         viewModelScope.launch {
-            bookRepository.updateBook(id, title, author, description, imageUrl, status)
+            bookRepository.updateBook(id, title, author, description, imageUrl, status, totalNotes, totalPages, currentPage)
         }
     }
 
