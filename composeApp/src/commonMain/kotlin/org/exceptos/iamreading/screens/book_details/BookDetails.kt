@@ -100,6 +100,7 @@ fun BookDetails(
             )
         }
     ) { padding ->
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -134,32 +135,16 @@ fun BookDetails(
                                 containerColor = Primary.copy(alpha = 0.08f)
                             )
                         ) {
+
                             Column(
                                 modifier = Modifier.padding(20.dp)
                             ) {
-                                // Placeholder image area (like the tree/reading image)
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(150.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                painter = painterResource(Res.drawable.ic_info),
-                                contentDescription = null,
-                                tint = Primary.copy(alpha = 0.4f),
-                                modifier = Modifier.size(60.dp)
-                            )
-                                }
-
-                                Spacer(modifier = Modifier.height(16.dp))
 
                                 // Progress percentage
-                val currentPageNum = currentBookPage ?: 0
-                val totalPages = book?.totalPages ?: 200
-                val progress = if (totalPages > 0) currentPageNum.toFloat() / totalPages else 0f
+                                val currentPageNum = currentBookPage ?: 0
+                                val totalPages = book?.totalPages ?: 200
+                                val progress =
+                                    if (totalPages > 0) currentPageNum.toFloat() / totalPages else 0f
 
                                 Text(
                                     text = "${(progress * 100).toInt()}%",
@@ -219,19 +204,19 @@ fun BookDetails(
             }
 
             // Reading Status Section
-            item {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        "Reading Status",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    BookStatusSection(book?.status, viewModel::updateBookStatus)
-                }
-            }
+//            item {
+//                Column(
+//                    verticalArrangement = Arrangement.spacedBy(12.dp)
+//                ) {
+//                    Text(
+//                        "Reading Status",
+//                        style = MaterialTheme.typography.titleMedium,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = MaterialTheme.colorScheme.onSurface
+//                    )
+//                    BookStatusSection(book?.status, viewModel::updateBookStatus)
+//                }
+//            }
 
             // Notes Section (only for currently reading)
             if (book?.status == BookStatus.CURRENTLY_READING.toString()) {
